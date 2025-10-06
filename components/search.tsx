@@ -1,12 +1,20 @@
+import useSearchStore from "@/app/stores/searchStore";
 import Fontisto from "@expo/vector-icons/Fontisto";
 import { useState } from "react";
 import { KeyboardAvoidingView, StyleSheet, TextInput } from "react-native";
 
 export default function SearchItem() {
   const [isFocus, setIsFocus] = useState(false);
+  const searchText = useSearchStore((state) => state.searchText);
+  const setSearchText = useSearchStore((state) => state.setSearchText);
 
-  const handleFocus = () => {
-    setIsFocus(true);
+  const handleOnChange = (text: string) => {
+    setSearchText(text);
+    if (text == "") {
+      setIsFocus(true);
+    }else{
+      setIsFocus(false)
+    }
   };
 
   return (
@@ -18,14 +26,15 @@ export default function SearchItem() {
         name="search"
         size={15}
         color={"#3f5265"}
-        style={{ display: !isFocus ? "flex" : "none" }}
+        style={{ display: !isFocus ? "none" : "flex" }}
       />
       <TextInput
-        onFocus={handleFocus}
         style={style.input}
         placeholder="Empieza la búsqueda"
         placeholderTextColor={"#3f5265"}
         autoCapitalize="characters"
+        value={searchText}
+        onChangeText={handleOnChange}
       />
     </KeyboardAvoidingView>
   );
